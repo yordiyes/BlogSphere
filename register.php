@@ -2,10 +2,15 @@
 <?php include "includes/header.php"; ?>
 
 <?php
-if(isset($_POST['submit'])) {
+if(isset($_POST['register'])) {
     $username = trim($_POST['username']);
     $email    = trim($_POST['email']);
     $password = $_POST['password'];
+    $csrf_token = $_POST['csrf_token'];
+
+    if(!validate_csrf_token($csrf_token)) {
+        die("CSRF Token Validation Failed");
+    }
 
     if(!empty($username) && !empty($email) && !empty($password)) {
         // Hash Password
@@ -43,7 +48,8 @@ if(isset($_POST['submit'])) {
                         <div class="alert alert-success border-0 rounded-3 small mb-4"><?php echo $message; ?></div>
                     <?php endif; ?>
 
-                    <form action="register.php" method="post">
+                    <form action="register.php" method="post" class="fade-up">
+                        <input type="hidden" name="csrf_token" value="<?php echo get_csrf_token(); ?>">
                         <div class="mb-4">
                             <label class="form-label small fw-bold text-muted text-uppercase">Username</label>
                             <input type="text" name="username" class="form-control p-3 bg-light border-0 shadow-none" placeholder="Choose a username" required style="border-radius: 12px;">

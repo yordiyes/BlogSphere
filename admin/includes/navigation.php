@@ -11,6 +11,14 @@
         <a href="posts.php?source=add_post" class="list-group-item list-group-item-action">
             <i class="fa-solid fa-plus-circle"></i> Add New Post
         </a>
+        <?php if($_SESSION['user_role'] == 'admin'): ?>
+        <a href="users.php" class="list-group-item list-group-item-action">
+            <i class="fa-solid fa-users"></i> Users
+        </a>
+        <?php endif; ?>
+        <a href="profile.php" class="list-group-item list-group-item-action">
+            <i class="fa-solid fa-user-circle"></i> Profile
+        </a>
         <a href="../index.php" class="list-group-item list-group-item-action">
             <i class="fa-solid fa-globe"></i> View Public Site
         </a>

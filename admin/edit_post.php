@@ -7,7 +7,17 @@ if(isset($_GET['p_id'])){
     $stmt->execute([$the_post_id]);
     $row = $stmt->fetch();
 
+    if(!$row) {
+        header("Location: posts.php");
+    }
+
+    // Ownership Validation
+    if($_SESSION['user_role'] != 'admin' && $row['post_author'] != $_SESSION['username']) {
+        die("Unauthorized Action");
+    }
+
     $post_title = $row['post_title'];
+    $post_category_id = $row['post_category_id'];
     $post_status = $row['post_status'];
     $post_content = $row['post_content'];
     $post_tags = $row['post_tags'];
@@ -15,7 +25,12 @@ if(isset($_GET['p_id'])){
 }
 
 if(isset($_POST['update_post'])) {
+    $csrf_token = $_POST['csrf_token'];
+    if(!validate_csrf_token($csrf_token)) {
+        die("CSRF Token Validation Failed");
+    }
     $post_title = $_POST['title'];
+    $post_category_id = $_POST['post_category'];
     $post_status = $_POST['post_status'];
     $post_image = $_FILES['image']['name'];
     $post_image_temp = $_FILES['image']['tmp_name'];
@@ -29,18 +44,35 @@ if(isset($_POST['update_post'])) {
         move_uploaded_file($post_image_temp, "../images/$post_image");
     }
 
-    $query = "UPDATE posts SET post_title = ?, post_status = ?, post_image = ?, post_content = ?, post_tags = ? WHERE post_id = ?";
+    $query = "UPDATE posts SET post_title = ?, post_category_id = ?, post_status = ?, post_image = ?, post_content = ?, post_tags = ? WHERE post_id = ?";
     $stmt = $pdo->prepare($query);
-    $stmt->execute([$post_title, $post_status, $post_image, $post_content, $post_tags, $the_post_id]);
+    $stmt->execute([$post_title, $post_category_id, $post_status, $post_image, $post_content, $post_tags, $the_post_id]);
 
     echo "<div class='alert alert-success'>Post Updated. <a href='posts.php'>View Posts</a></div>";
 }
 ?>
 
 <form action="" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="<?php echo get_csrf_token(); ?>">
     <div class="mb-3">
         <label>Post Title</label>
         <input value="<?php echo $post_title; ?>" type="text" class="form-control" name="title">
+    </div>
+
+    <div class="mb-3">
+        <label>Post Category</label>
+        <select name="post_category" class="form-control">
+            <?php
+            $query_cat = "SELECT * FROM categories";
+            $stmt_cat = $pdo->query($query_cat);
+            while($row_cat = $stmt_cat->fetch()) {
+                $cat_id = $row_cat['cat_id'];
+                $cat_title = $row_cat['cat_title'];
+                $selected = ($cat_id == $post_category_id) ? "selected" : "";
+                echo "<option value='{$cat_id}' {$selected}>{$cat_title}</option>";
+            }
+            ?>
+        </select>
     </div>
 
     <div class="mb-3">

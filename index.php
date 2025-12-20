@@ -21,7 +21,27 @@
             <h2 class="mb-4 border-start border-4 border-primary ps-3">Latest Stories</h2>
 
             <?php
-            $query = "SELECT * FROM posts WHERE post_status = 'published' ORDER BY post_id DESC";
+            // Pagination Logic
+            $per_page = 5;
+            if(isset($_GET['page'])){
+                $page = $_GET['page'];
+            } else {
+                $page = "";
+            }
+
+            if($page == "" || $page == 1){
+                $page_1 = 0;
+            } else {
+                $page_1 = ($page * $per_page) - $per_page;
+            }
+
+            // Count all published posts for pagination
+            $post_count_query = "SELECT * FROM posts WHERE post_status = 'published'";
+            $find_count = $pdo->query($post_count_query);
+            $count_all = $find_count->rowCount();
+            $count_pages = ceil($count_all / $per_page);
+
+            $query = "SELECT * FROM posts WHERE post_status = 'published' ORDER BY post_id DESC LIMIT $page_1, $per_page";
             $stmt = $pdo->query($query);
             $count = 0;
             
@@ -35,7 +55,7 @@
                 $post_image = $row['post_image'];
                 $post_content = substr($row['post_content'], 0, 150);
                 
-                if($count == 0) { ?>
+                if($count == 0 && ($page == "" || $page == 1)) { ?>
                     <!-- Spotlight (Featured) Post -->
                     <div class="col-12 fade-up">
                         <article class="card-spotlight">
@@ -77,7 +97,19 @@
                 $count++;
             }
             echo '</div>'; // End grid row
+
+            // Pagination Links
+            echo '<nav aria-label="Page navigation" class="mt-4"><ul class="pagination justify-content-center">';
+            for($i=1; $i <= $count_pages; $i++){
+                if($i == $page || ($i == 1 && $page == "")){
+                    echo "<li class='page-item active'><a class='page-link' href='index.php?page={$i}'>{$i}</a></li>";
+                } else {
+                    echo "<li class='page-item'><a class='page-link' href='index.php?page={$i}'>{$i}</a></li>";
+                }
+            }
+            echo '</ul></nav>';
             ?>
+
         </div>
 
         <!-- Sidebar Widgets Column -->

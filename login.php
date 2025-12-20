@@ -6,6 +6,11 @@
 if(isset($_POST['login'])) {
     $username = $_POST['username'];
     $password = $_POST['password'];
+    $csrf_token = $_POST['csrf_token'];
+
+    if(!validate_csrf_token($csrf_token)) {
+        die("CSRF Token Validation Failed");
+    }
 
     $query = "SELECT * FROM users WHERE username = ?";
     $stmt = $pdo->prepare($query);
@@ -39,7 +44,8 @@ if(isset($_POST['login'])) {
                 
                 <div class="card-body p-4 p-md-5">
                     <form action="login.php" method="post">
-                        <div class="mb-4">
+                <input type="hidden" name="csrf_token" value="<?php echo get_csrf_token(); ?>">
+                <div class="mb-4">
                             <label class="form-label small fw-bold text-muted text-uppercase">Username</label>
                             <input name="username" type="text" class="form-control p-3 bg-light border-0 shadow-none" placeholder="Enter username" style="border-radius: 12px;">
                         </div>

@@ -1,7 +1,10 @@
 <?php ob_start(); ?>
 <?php session_start(); ?>
 <?php 
-// Adjust path to db.php based on inclusion
+// Adjust paths
+if(file_exists("../includes/functions.php")) {
+    include "../includes/functions.php";
+}
 if(file_exists("../includes/db.php")) {
     include "../includes/db.php";
 } elseif(file_exists("../../includes/db.php")) {

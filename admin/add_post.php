@@ -1,8 +1,12 @@
 <?php
 if(isset($_POST['create_post'])) {
+    $csrf_token = $_POST['csrf_token'];
+    if(!validate_csrf_token($csrf_token)) {
+        die("CSRF Token Validation Failed");
+    }
     $post_title = $_POST['title'];
     $post_author = $_SESSION['username'];
-    $post_category_id = 1; // Default to 1 for now, or add a select input
+    $post_category_id = $_POST['post_category'];
     $post_status = $_POST['post_status'];
 
     $post_image = $_FILES['image']['name'];
@@ -25,9 +29,25 @@ if(isset($_POST['create_post'])) {
 ?>
 
 <form action="" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="<?php echo get_csrf_token(); ?>">
     <div class="mb-3">
         <label>Post Title</label>
         <input type="text" class="form-control" name="title">
+    </div>
+
+    <div class="mb-3">
+        <label>Post Category</label>
+        <select name="post_category" class="form-control">
+            <?php
+            $query = "SELECT * FROM categories";
+            $stmt = $pdo->query($query);
+            while($row = $stmt->fetch()) {
+                $cat_id = $row['cat_id'];
+                $cat_title = $row['cat_title'];
+                echo "<option value='{$cat_id}'>{$cat_title}</option>";
+            }
+            ?>
+        </select>
     </div>
 
     <div class="mb-3">

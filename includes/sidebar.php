@@ -30,11 +30,20 @@
     <h5 class="fw-bold mb-4">Categories</h5>
     <ul class="list-unstyled mb-0">
         <?php
-        $stmt = $pdo->query("SELECT * FROM categories LIMIT 6");
+        $query = "SELECT categories.cat_id, categories.cat_title, COUNT(posts.post_id) as post_count 
+                  FROM categories 
+                  LEFT JOIN posts ON categories.cat_id = posts.post_category_id AND posts.post_status = 'published' 
+                  GROUP BY categories.cat_id 
+                  LIMIT 6";
+        $stmt = $pdo->query($query);
         while($row = $stmt->fetch()) {
             $cat_title = $row['cat_title'];
             $cat_id = $row['cat_id'];
-            echo "<li><a href='#'>{$cat_title} <i class='fa-solid fa-chevron-right small opacity-50'></i></a></li>";
+            $post_count = $row['post_count'];
+            echo "<li><a href='category.php?category={$cat_id}' class='d-flex justify-content-between align-items-center mb-2'>
+                    <span>{$cat_title}</span>
+                    <span class='badge bg-light text-primary rounded-pill'>{$post_count}</span>
+                  </a></li>";
         }
         ?>
     </ul>
