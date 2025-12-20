@@ -9,21 +9,6 @@
     </form>
 </div>
 
-<!-- Login Widget (Only show if NOT logged in) -->
-<?php if(!isset($_SESSION['user_role'])): ?>
-<div class="card sidebar-widget mb-4">
-    <h5 class="fw-bold mb-4">Member Login</h5>
-    <form action="login.php" method="post">
-        <div class="mb-3">
-            <input name="username" type="text" class="form-control rounded-pill" placeholder="Username">
-        </div>
-        <div class="mb-3">
-            <input name="password" type="password" class="form-control rounded-pill" placeholder="Password">
-        </div>
-        <button class="btn btn-primary w-100 rounded-pill" name="login" type="submit">Sign In</button>
-    </form>
-</div>
-<?php endif; ?>
 
 <!-- Categories Widget -->
 <div class="card sidebar-widget mb-4">
