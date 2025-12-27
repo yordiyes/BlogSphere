@@ -39,3 +39,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `randSalt` varchar(255) DEFAULT '$2y$10$iusesomecrazystrings22',
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Dumping data for `users`
+INSERT INTO `users` (`username`, `user_password`, `user_firstname`, `user_lastname`, `user_email`, `user_role`) VALUES
+('admin', '$2y$12$yWONvE87iLXgZ3pi85QLNO8j0RaUk/3r9jGr.snqhObILnUveyNxC', 'Admin', 'User', 'admin@blogsphere.com', 'admin');

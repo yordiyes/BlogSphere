@@ -3,26 +3,30 @@
 
 <?php
 if(isset($_POST['register'])) {
-    $username = trim($_POST['username']);
-    $email    = trim($_POST['email']);
-    $password = $_POST['password'];
+    $username  = trim($_POST['username']);
+    $email     = trim($_POST['email']);
+    $firstname = trim($_POST['firstname']);
+    $lastname  = trim($_POST['lastname']);
+    $password  = $_POST['password'];
     $csrf_token = $_POST['csrf_token'];
 
     if(!validate_csrf_token($csrf_token)) {
-        die("CSRF Token Validation Failed");
-    }
-
-    if(!empty($username) && !empty($email) && !empty($password)) {
+        $message = "CSRF Token Validation Failed";
+    } elseif(!empty($username) && !empty($email) && !empty($password)) {
         // Hash Password
         $password = password_hash($password, PASSWORD_BCRYPT, array('cost' => 12));
 
-        $query = "INSERT INTO users (username, user_email, user_password, user_role) VALUES (?, ?, ?, 'subscriber')";
+        $query = "INSERT INTO users (username, user_email, user_firstname, user_lastname, user_password, user_role) VALUES (?, ?, ?, ?, ?, 'subscriber')";
         $stmt = $pdo->prepare($query);
         
-        if($stmt->execute([$username, $email, $password])) {
-            $message = "Registration successful! <a href='login.php'>Login Here</a>";
-        } else {
-            $message = "Something went wrong.";
+        try {
+            if($stmt->execute([$username, $email, $firstname, $lastname, $password])) {
+                $message = "Registration successful! <a href='login.php'>Login Here</a>";
+            } else {
+                $message = "Something went wrong.";
+            }
+        } catch(PDOException $e) {
+            $message = "Error: " . $e->getMessage();
         }
     } else {
         $message = "Fields cannot be empty";
@@ -50,6 +54,16 @@ if(isset($_POST['register'])) {
 
                     <form action="register.php" method="post" class="fade-up">
                         <input type="hidden" name="csrf_token" value="<?php echo get_csrf_token(); ?>">
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label small fw-bold text-muted text-uppercase">First Name</label>
+                                <input type="text" name="firstname" class="form-control p-3 bg-light border-0 shadow-none" placeholder="First Name" style="border-radius: 12px;">
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label small fw-bold text-muted text-uppercase">Last Name</label>
+                                <input type="text" name="lastname" class="form-control p-3 bg-light border-0 shadow-none" placeholder="Last Name" style="border-radius: 12px;">
+                            </div>
+                        </div>
                         <div class="mb-4">
                             <label class="form-label small fw-bold text-muted text-uppercase">Username</label>
                             <input type="text" name="username" class="form-control p-3 bg-light border-0 shadow-none" placeholder="Choose a username" required style="border-radius: 12px;">
@@ -62,7 +76,7 @@ if(isset($_POST['register'])) {
                             <label class="form-label small fw-bold text-muted text-uppercase">Password</label>
                             <input type="password" name="password" class="form-control p-3 bg-light border-0 shadow-none" placeholder="Create a password" required style="border-radius: 12px;">
                         </div>
-                        <button type="submit" name="submit" class="btn btn-primary w-100 py-3 rounded-pill shadow-sm">Register</button>
+                        <button type="submit" name="register" class="btn btn-primary w-100 py-3 rounded-pill shadow-sm">Register</button>
                     </form>
                     
                     <div class="text-center mt-4">
