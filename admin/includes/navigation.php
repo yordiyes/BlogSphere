@@ -1,6 +1,6 @@
 <!-- Sidebar -->
 <div id="sidebar-wrapper">
-    <div class="sidebar-heading"><i class="fa-solid fa-gauge-high"></i> AdminPanel</div>
+    <div class="sidebar-heading"><i class="fa-solid fa-gauge-high"></i> <?php echo (isset($_SESSION['user_role']) && $_SESSION['user_role'] == 'admin') ? 'Admin Panel' : 'Author Panel'; ?></div>
     <div class="list-group list-group-flush">
         <a href="index.php" class="list-group-item list-group-item-action">
             <i class="fa-solid fa-house"></i> Dashboard
@@ -12,6 +12,9 @@
             <i class="fa-solid fa-plus-circle"></i> Add New Post
         </a>
         <?php if($_SESSION['user_role'] == 'admin'): ?>
+        <a href="categories.php" class="list-group-item list-group-item-action">
+            <i class="fa-solid fa-tags"></i> Categories
+        </a>
         <a href="users.php" class="list-group-item list-group-item-action">
             <i class="fa-solid fa-users"></i> Users
         </a>

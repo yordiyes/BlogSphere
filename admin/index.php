@@ -1,7 +1,7 @@
 <?php include "includes/header.php"; ?>
 <?php include "includes/navigation.php"; ?>
 
-<h1 class="mt-4">Dashboard Overview</h1>
+<h1 class="mt-4"><?php echo (isset($_SESSION['user_role']) && $_SESSION['user_role'] == 'admin') ? 'Admin Dashboard' : 'Author Dashboard'; ?></h1>
 <ol class="breadcrumb mb-4">
     <li class="breadcrumb-item active">Activity Summary</li>
 </ol>

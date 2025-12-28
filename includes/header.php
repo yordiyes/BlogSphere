@@ -39,7 +39,7 @@ if (session_status() === PHP_SESSION_NONE) {
                 <li class="nav-item"><a class="nav-link" href="index.php">Home</a></li>
                 
                 <?php if(isset($_SESSION['user_role'])): ?>
-                    <li class="nav-item"><a class="nav-link" href="admin/index.php">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="admin/index.php"><?php echo ($_SESSION['user_role'] == 'admin') ? 'Admin Dashboard' : 'Author Dashboard'; ?></a></li>
                     <li class="nav-item"><a class="nav-link btn btn-light text-primary px-3 ms-2 rounded-pill" href="logout.php">Logout</a></li>
                 <?php else: ?>
                     <li class="nav-item"><a class="nav-link" href="login.php">Login</a></li>

@@ -87,7 +87,6 @@ switch($source){
                 <option value="author">Select Options</option>
                 <option value="admin">Admin</option>
                 <option value="author">Author</option>
-                <option value="reader">Reader</option>
             </select>
         </div>
         <div class="mb-3">
