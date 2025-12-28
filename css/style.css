@@ -231,6 +231,13 @@ h6,
   padding: 2rem;
 }
 
+/* Sticky Sidebar */
+.col-md-4 {
+  position: sticky;
+  top: 100px; /* Adjust based on navbar height */
+  height: fit-content;
+}
+
 .sidebar-widget .list-unstyled li {
   padding: 10px 0;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
