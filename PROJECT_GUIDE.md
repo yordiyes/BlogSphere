@@ -1,4 +1,4 @@
-# BlogSphere Project Defense Guide
+# BlogSphere Project Guide
 
 This document serves as a comprehensive guide for defending the **BlogSphere** project. It covers the technical architecture, database design, application flow, and key features implemented in the system.
 
@@ -113,7 +113,7 @@ _Access is restricted to logged-in users._
 
 ---
 
-## 5. Key Defense Questions & Answers
+## 5. Key Questions & Answers
 
 **Q: How many tables do you have?**
 _A: We have 3 primary tables: Users, Posts, and Categories._
