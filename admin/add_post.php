@@ -16,15 +16,19 @@ if(isset($_POST['create_post'])) {
     $post_content = $_POST['post_content'];
     $post_date = date('d-m-y');
 
-    move_uploaded_file($post_image_temp, "../images/$post_image");
+    if(empty($post_title) || empty($post_category_id) || empty($post_status) || empty($post_image) || empty($post_tags) || empty($post_content)) {
+        echo "<div class='alert alert-danger'>All fields are required.</div>";
+    } else {
+        move_uploaded_file($post_image_temp, "../images/$post_image");
 
-    $query = "INSERT INTO posts(post_category_id, post_title, post_author, post_date, post_image, post_content, post_tags, post_status) ";
-    $query .= "VALUES(?, ?, ?, now(), ?, ?, ?, ?)";
-    
-    $stmt = $pdo->prepare($query);
-    $stmt->execute([$post_category_id, $post_title, $post_author, $post_image, $post_content, $post_tags, $post_status]);
+        $query = "INSERT INTO posts(post_category_id, post_title, post_author, post_date, post_image, post_content, post_tags, post_status) ";
+        $query .= "VALUES(?, ?, ?, now(), ?, ?, ?, ?)";
+        
+        $stmt = $pdo->prepare($query);
+        $stmt->execute([$post_category_id, $post_title, $post_author, $post_image, $post_content, $post_tags, $post_status]);
 
-    echo "<div class='alert alert-success'>Post Created. <a href='posts.php'>View Posts</a></div>";
+        echo "<div class='alert alert-success'>Post Created. <a href='posts.php'>View Posts</a></div>";
+    }
 }
 ?>
 
@@ -32,12 +36,12 @@ if(isset($_POST['create_post'])) {
     <input type="hidden" name="csrf_token" value="<?php echo get_csrf_token(); ?>">
     <div class="mb-3">
         <label>Post Title</label>
-        <input type="text" class="form-control" name="title">
+        <input type="text" class="form-control" name="title" required>
     </div>
 
     <div class="mb-3">
         <label>Post Category</label>
-        <select name="post_category" class="form-control">
+        <select name="post_category" class="form-control" required>
             <?php
             $query = "SELECT * FROM categories";
             $stmt = $pdo->query($query);
@@ -52,8 +56,8 @@ if(isset($_POST['create_post'])) {
 
     <div class="mb-3">
         <label>Post Status</label>
-        <select name="post_status" class="form-control">
-            <option value="draft">Select Options</option>
+        <select name="post_status" class="form-control" required>
+            <option value="">Select Options</option>
             <option value="published">Published</option>
             <option value="draft">Draft</option>
         </select>
@@ -61,17 +65,17 @@ if(isset($_POST['create_post'])) {
 
     <div class="mb-3">
         <label>Post Image</label>
-        <input type="file" class="form-control" name="image">
+        <input type="file" class="form-control" name="image" required>
     </div>
 
     <div class="mb-3">
         <label>Post Tags</label>
-        <input type="text" class="form-control" name="post_tags">
+        <input type="text" class="form-control" name="post_tags" required>
     </div>
 
     <div class="mb-3">
         <label>Post Content</label>
-        <textarea class="form-control" name="post_content" rows="10"></textarea>
+        <textarea class="form-control" name="post_content" rows="10" required></textarea>
     </div>
 
     <button type="submit" class="btn btn-primary" name="create_post">Publish Post</button>

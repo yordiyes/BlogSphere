@@ -64,6 +64,17 @@ While the core application logic is procedural (using functions and script files
 2.  **Password Security:** Passwords are never stored in plain text. We use `password_hash()` (Bcrypt) for storage and `password_verify()` for login.
 3.  **CSRF Protection:** Cross-Site Request Forgery tokens are generated (`bin2hex(random_bytes(32))`) and validated on forms (Login, Register) to prevent unauthorized form submissions.
 4.  **Session Management:** `session_start()` is used to track logged-in users and restrict access to admin pages.
+5.  **Form Validation:**
+    - **Client-Side:** HTML5 `required` attributes ensure fields are not submitted empty.
+    - **Server-Side:** PHP checks ensure data integrity (e.g., unique usernames/emails, password length, valid email format) before processing.
+
+### **Data Handling**
+
+- **Image Storage:**
+  - Images are **NOT** stored directly in the database (BLOB).
+  - Instead, the physical image files are uploaded to the server's file system (specifically the `images/` directory).
+  - The database only stores the **filename** (string) as a reference to the image.
+  - _Why?_ This keeps the database lightweight and improves performance.
 
 ---
 
@@ -118,3 +129,9 @@ _A: We implemented Prepared Statements to stop SQL Injection, Bcrypt hashing for
 
 **Q: How does the login system work?**
 _A: It verifies the username against the database, checks the hashed password using `password_verify()`, and if successful, stores the user's ID and Role in the `$_SESSION` superglobal._
+
+**Q: Where are the images stored?**
+_A: The actual image files are stored in the `images/` folder on the server. The database only saves the name of the file (e.g., `image.jpg`) so the application knows which image to display._
+
+**Q: How do you validate user input?**
+_A: We use a dual-layer approach. HTML5 attributes provide immediate feedback in the browser, while PHP scripts perform strict checks on the server (checking for empty fields, valid email formats, and unique usernames) to ensure data integrity._

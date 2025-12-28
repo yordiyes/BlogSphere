@@ -13,20 +13,39 @@ if(isset($_POST['register'])) {
     if(!validate_csrf_token($csrf_token)) {
         $message = "CSRF Token Validation Failed";
     } elseif(!empty($username) && !empty($email) && !empty($password)) {
-        // Hash Password
-        $password = password_hash($password, PASSWORD_BCRYPT, array('cost' => 12));
-
-        $query = "INSERT INTO users (username, user_email, user_firstname, user_lastname, user_password, user_role) VALUES (?, ?, ?, ?, ?, 'subscriber')";
-        $stmt = $pdo->prepare($query);
         
-        try {
-            if($stmt->execute([$username, $email, $firstname, $lastname, $password])) {
-                $message = "Registration successful! <a href='login.php'>Login Here</a>";
+        // Server-side Validation
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $message = "Invalid email format";
+        } elseif (strlen($password) < 6) {
+            $message = "Password must be at least 6 characters long";
+        } elseif (!preg_match('/[A-Z]/', $password) || !preg_match('/[a-z]/', $password)) {
+            $message = "Password must contain at least one uppercase and one lowercase letter";
+        } else {
+            // Check for existing username or email
+            $check_query = "SELECT username, user_email FROM users WHERE username = ? OR user_email = ?";
+            $check_stmt = $pdo->prepare($check_query);
+            $check_stmt->execute([$username, $email]);
+            
+            if($check_stmt->rowCount() > 0) {
+                $message = "Username or Email already exists";
             } else {
-                $message = "Something went wrong.";
+                // Hash Password
+                $password = password_hash($password, PASSWORD_BCRYPT, array('cost' => 12));
+
+                $query = "INSERT INTO users (username, user_email, user_firstname, user_lastname, user_password, user_role) VALUES (?, ?, ?, ?, ?, 'subscriber')";
+                $stmt = $pdo->prepare($query);
+                
+                try {
+                    if($stmt->execute([$username, $email, $firstname, $lastname, $password])) {
+                        $message = "Registration successful! <a href='login.php'>Login Here</a>";
+                    } else {
+                        $message = "Something went wrong.";
+                    }
+                } catch(PDOException $e) {
+                    $message = "Error: " . $e->getMessage();
+                }
             }
-        } catch(PDOException $e) {
-            $message = "Error: " . $e->getMessage();
         }
     } else {
         $message = "Fields cannot be empty";
@@ -57,11 +76,11 @@ if(isset($_POST['register'])) {
                         <div class="row">
                             <div class="col-md-6 mb-4">
                                 <label class="form-label small fw-bold text-muted text-uppercase">First Name</label>
-                                <input type="text" name="firstname" class="form-control p-3 bg-light border-0 shadow-none" placeholder="First Name" style="border-radius: 12px;">
+                                <input type="text" name="firstname" class="form-control p-3 bg-light border-0 shadow-none" placeholder="First Name" required style="border-radius: 12px;">
                             </div>
                             <div class="col-md-6 mb-4">
                                 <label class="form-label small fw-bold text-muted text-uppercase">Last Name</label>
-                                <input type="text" name="lastname" class="form-control p-3 bg-light border-0 shadow-none" placeholder="Last Name" style="border-radius: 12px;">
+                                <input type="text" name="lastname" class="form-control p-3 bg-light border-0 shadow-none" placeholder="Last Name" required style="border-radius: 12px;">
                             </div>
                         </div>
                         <div class="mb-4">

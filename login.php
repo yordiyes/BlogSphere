@@ -47,11 +47,11 @@ if(isset($_POST['login'])) {
                 <input type="hidden" name="csrf_token" value="<?php echo get_csrf_token(); ?>">
                 <div class="mb-4">
                             <label class="form-label small fw-bold text-muted text-uppercase">Username</label>
-                            <input name="username" type="text" class="form-control p-3 bg-light border-0 shadow-none" placeholder="Enter username" style="border-radius: 12px;">
+                            <input name="username" type="text" class="form-control p-3 bg-light border-0 shadow-none" placeholder="Enter username" required style="border-radius: 12px;">
                         </div>
                         <div class="mb-4">
                             <label class="form-label small fw-bold text-muted text-uppercase">Password</label>
-                            <input name="password" type="password" class="form-control p-3 bg-light border-0 shadow-none" placeholder="Enter password" style="border-radius: 12px;">
+                            <input name="password" type="password" class="form-control p-3 bg-light border-0 shadow-none" placeholder="Enter password" required style="border-radius: 12px;">
                         </div>
                         <button class="btn btn-primary w-100 py-3 rounded-pill shadow-sm" name="login" type="submit">Sign In</button>
                     </form>
