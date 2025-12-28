@@ -60,11 +60,12 @@ if(!isset($_SESSION['user_role'])) {
         .list-group-item i { margin-right: 10px; width: 20px; text-align: center; }
         
         /* Page Content */
-        #page-content-wrapper { width: 100%; }
+        #page-content-wrapper { flex: 1; width: 0; overflow-x: hidden; }
         .navbar-light { background-color: #fff !important; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         
         /* Cards */
         .card-counter{
+            position: relative;
             box-shadow: 2px 2px 10px #DADADA;
             margin: 5px;
             padding: 20px 10px;
@@ -72,16 +73,17 @@ if(!isset($_SESSION['user_role'])) {
             height: 100px;
             border-radius: 5px;
             transition: .3s linear all;
+            overflow: hidden;
         }
-        .card-counter:hover{ box-shadow: 4px 4px 20px #DADADA; transform: scale(1.02); }
+        .card-counter:hover{ box-shadow: 4px 4px 20px #DADADA; transform: scale(1.02); z-index: 10; }
         .card-counter.primary{ background-color: #007bff; color: #FFF; }
         .card-counter.success{ background-color: #198754; color: #FFF; }
         .card-counter.danger{ background-color: #dc3545; color: #FFF; }
         .card-counter.info{ background-color: #0dcaf0; color: #FFF; }  
 
-        .card-counter i{ font-size: 5em; opacity: 0.2; position: absolute; right: 15px; top: 15px; }
-        .card-counter .count-numbers{ position: absolute; right: 35px; top: 20px; font-size: 32px; display: block; font-weight: bold; }
-        .card-counter .count-name{ position: absolute; right: 35px; top: 65px; font-style: italic; text-transform: capitalize; opacity: 0.8; display: block; font-size: 18px; }
+        .card-counter i{ font-size: 5em; opacity: 0.2; position: absolute; right: 15px; top: 15px; z-index: 1; }
+        .card-counter .count-numbers{ position: absolute; right: 35px; top: 20px; font-size: 32px; display: block; font-weight: bold; z-index: 2; }
+        .card-counter .count-name{ position: absolute; right: 35px; top: 65px; font-style: italic; text-transform: capitalize; opacity: 0.8; display: block; font-size: 18px; z-index: 2; }
     </style>
 </head>
 <body>

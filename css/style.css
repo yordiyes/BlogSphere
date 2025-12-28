@@ -95,9 +95,10 @@ h6,
   transition: transform 1s ease;
 }
 
-.card-spotlight:hover .card-img-top {
+/* Zoom effect removed as requested */
+/* .card-spotlight:hover .card-img-top {
   transform: scale(1.05);
-}
+} */
 
 .card-spotlight .card-body {
   position: absolute;
@@ -117,10 +118,19 @@ h6,
 }
 
 .card-spotlight .card-title {
-  font-size: clamp(1.75rem, 5vw, 3rem); /* Responsive font scaling */
-  font-weight: 800;
+  font-size: 2.5rem; /* Fixed size instead of clamp */
+  font-weight: 700;
   margin-bottom: 1.25rem;
-  line-height: 1.1;
+  line-height: 1.2;
+}
+
+.card-spotlight .card-title a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.card-spotlight .card-title a:hover {
+  color: #e2e8f0;
 }
 
 .card-spotlight .card-text {
