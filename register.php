@@ -1,4 +1,11 @@
 <?php include "includes/db.php"; ?>
+<?php session_start(); ?>
+<?php
+if(isset($_SESSION['user_role'])) {
+    header("Location: index.php");
+    exit;
+}
+?>
 <?php include "includes/header.php"; ?>
 
 <?php
