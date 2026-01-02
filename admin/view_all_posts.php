@@ -46,27 +46,33 @@ if(isset($_GET['delete'])){
 
 <form action="" method='post'>
     <div class="row align-items-center mb-3">
-        <div id="bulkOptionsContainer" class="col-md-4">
-            <div class="input-group">
-                <select class="form-select" name="bulk_options" id="">
-                    <option value="">Select Bulk Action</option>
-                    <option value="published">Publish</option>
-                    <option value="draft">Draft</option>
-                    <option value="delete">Delete</option>
-                </select>
-                <button type="submit" name="submit" class="btn btn-success">Apply</button>
-            </div>
-        </div>
-        <div class="col-md-4 offset-md-4 text-end">
-            <a class="btn btn-primary" href="posts.php?source=add_post"><i class="fa-solid fa-plus-circle"></i> Add New Post</a>
-        </div>
-    </div>
-
-    <!-- Category Filter -->
-    <div class="row mb-3">
         <div class="col-md-4">
             <select class="form-select" onchange="location = this.value;">
-                <option value="posts.php">All Categories</option>
+                <?php
+                $cat_part = isset($_GET['category']) ? "category=" . $_GET['category'] : "";
+                
+                $all_status_url = "posts.php" . ($cat_part ? "?" . $cat_part : "");
+                
+                if($cat_part) {
+                    $pub_url = "posts.php?" . $cat_part . "&status=published";
+                    $draft_url = "posts.php?" . $cat_part . "&status=draft";
+                } else {
+                    $pub_url = "posts.php?status=published";
+                    $draft_url = "posts.php?status=draft";
+                }
+                ?>
+                <option value="<?php echo $all_status_url; ?>">All Status</option>
+                <option value="<?php echo $pub_url; ?>" <?php echo (isset($_GET['status']) && $_GET['status'] == 'published') ? 'selected' : ''; ?>>Published</option>
+                <option value="<?php echo $draft_url; ?>" <?php echo (isset($_GET['status']) && $_GET['status'] == 'draft') ? 'selected' : ''; ?>>Draft</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <select class="form-select" onchange="location = this.value;">
+                <?php
+                $status_param = isset($_GET['status']) ? "&status=" . $_GET['status'] : "";
+                $all_cats_url = "posts.php" . ($status_param ? "?status=" . $_GET['status'] : "");
+                ?>
+                <option value="<?php echo $all_cats_url; ?>">All Categories</option>
                 <?php
                 $query_cat_filter = "SELECT * FROM categories";
                 $stmt_cat_filter = $pdo->query($query_cat_filter);
@@ -74,10 +80,14 @@ if(isset($_GET['delete'])){
                     $cat_id = $row_cat['cat_id'];
                     $cat_title = $row_cat['cat_title'];
                     $selected = (isset($_GET['category']) && $_GET['category'] == $cat_id) ? "selected" : "";
-                    echo "<option value='posts.php?category={$cat_id}' {$selected}>{$cat_title}</option>";
+                    $url = "posts.php?category={$cat_id}{$status_param}";
+                    echo "<option value='{$url}' {$selected}>{$cat_title}</option>";
                 }
                 ?>
             </select>
+        </div>
+        <div class="col-md-4 text-end">
+            <a class="btn btn-primary" href="posts.php?source=add_post"><i class="fa-solid fa-plus-circle"></i> Add New Post</a>
         </div>
     </div>
 
@@ -110,6 +120,11 @@ if(isset($_GET['delete'])){
             if(isset($_GET['category'])) {
                 $where_clauses[] = "post_category_id = ?";
                 $params[] = $_GET['category'];
+            }
+
+            if(isset($_GET['status'])) {
+                $where_clauses[] = "post_status = ?";
+                $params[] = $_GET['status'];
             }
 
             $query = "SELECT * FROM posts";
